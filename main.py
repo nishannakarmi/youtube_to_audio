@@ -2,27 +2,28 @@ from __future__ import unicode_literals
 from flask import Flask, render_template, request, redirect, url_for
 import youtube_dl
 from utils import get_video_info
-from settings import MAXIMUM_VIDEO_TIME, ERROR_MSG
+from settings import MAXIMUM_VIDEO_TIME, ERROR_MSG, SECRET_KEY
 
 app = Flask(__name__)
-# app.run(debug=True)
+app.debug = True
+app.secret_key = SECRET_KEY
 
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/pre_process', method=['POST'])
-def pre_process():
-    if request.method == 'POST':
-        urls = request.form.getlist('url')
-        if len(urls):
-            for url in urls:
-                info = get_video_info(url)
-                if info:
-                    pass
-                else:
-                    pass
+# @app.route('/pre_process', method=['POST'])
+# def pre_process():
+#     if request.method == 'POST':
+#         urls = request.form.getlist('url')
+#         if len(urls):
+#             for url in urls:
+#                 info = get_video_info(url)
+#                 if info:
+#                     pass
+#                 else:
+#                     pass
 
 
 @app.route('/process', methods=['POST'])
@@ -68,3 +69,7 @@ def process_file():
 @app.route('/download')
 def download():
     return render_template('download.html')
+
+
+if __name__ == '__main__':
+    app.run()
