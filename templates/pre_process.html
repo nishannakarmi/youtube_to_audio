@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h3>Your videos are being processed, Please wait.</h3>
+{% endblock %}
+{% block custom_scripts %}
+    <script type="application/javascript">
+        $('document').ready(function () {
+            var custom_uuid = "{{ custom_uuid }}";
+            $.ajax({
+                type: "post",
+                url: "{{ url_for('process_file') }}",
+                data: {'custom_uuid': custom_uuid},
+                success: function (res) {
+                    if (res['success']) {
+                        alert(res['msg']);
+                    } else {
+                        alert(res['msg']);
+                        setTimeout(function () {
+                            window.location.href = '/';
+                        }, 2000);
+                    }
+{#                    alert(res['custom_uuid']);#}
+                },
+                error: function (err) {
+                    alert('UNKNOWN ERROR, Please retry...');
+                    setTimeout(function () {
+                        window.location.href = '/';
+                    }, 2000);
+                }
+            })
+        });
+    </script>
+{% endblock %}
