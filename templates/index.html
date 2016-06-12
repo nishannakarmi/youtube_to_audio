@@ -38,7 +38,6 @@
 
                 $('.add-more-container').before(base_container);
                 current_number_of_urls ++;
-                console.log(current_number_of_urls)
             } else {
                 $('.alert').addClass('alert-danger');
                 $('.alert').html(alert_msg);
@@ -49,7 +48,6 @@
             $(this).parent().parent().remove();
             current_number_of_urls --;
             $('.alert').html("").removeClass('alert-danger');
-            console.log(current_number_of_urls);
         });
 
         $('#form-download').submit(function (e) {
@@ -66,7 +64,6 @@
                 $(".alert").html("Please add youtube video url's only.").addClass('alert-danger');
                 e.preventDefault();
             }
-            console.log($(this));
         });
 
         $('.reset-this-form').click(function () {

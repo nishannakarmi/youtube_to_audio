@@ -1,6 +1,13 @@
 {% extends "layout.html" %}
+{% block addition_css %}
+    <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
 {% block body %}
-    <h3>Your videos are being processed, Please wait.</h3>
+    <div class="row spin-container">
+        <h3><i class="fa fa-spinner spinning"></i> Your videos are being processed, Please wait...</h3>
+    </div>
+    <div class="row download-link hidden">
+    </div>
 {% endblock %}
 {% block custom_scripts %}
     <script type="application/javascript">
@@ -13,13 +20,18 @@
                 success: function (res) {
                     if (res['success']) {
                         alert(res['msg']);
+                        res['links'].forEach(function(link){
+                            $('.download-link').append('<a href="'+link+'">Download</a>');
+                        });
+                        $('.download-link').removeClass('hidden');
+                        $('.spin-container').addClass('hidden');
+
                     } else {
                         alert(res['msg']);
                         setTimeout(function () {
                             window.location.href = '/';
                         }, 2000);
                     }
-{#                    alert(res['custom_uuid']);#}
                 },
                 error: function (err) {
                     alert('UNKNOWN ERROR, Please retry...');
