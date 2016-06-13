@@ -54,7 +54,6 @@
             var error = false;
             $("form#form-download input[type=url]").each(function () {
                 var current_val = $(this).val();
-                console.log(current_val);
                 if (!ytVidCk(current_val)) {
                     error = true;
                 }

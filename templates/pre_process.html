@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
-{% block addition_css %}
-    <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
-{% endblock %}
 {% block body %}
     <div class="row spin-container">
-        <h3><i class="fa fa-spinner spinning"></i> Your videos are being processed, Please wait...</h3>
+        <h3><img src="{{ url_for('static', filename='img/spinner.gif') }}" class="img-rounded" alt="spinner" width="32" height="32"> Your videos are being processed, Please wait...</h3>
     </div>
     <div class="row download-link hidden">
     </div>
@@ -19,15 +16,18 @@
                 data: {'custom_uuid': custom_uuid},
                 success: function (res) {
                     if (res['success']) {
-                        alert(res['msg']);
+                        $('.alert').addClass('alert-success');
+                        $('.alert').html(res['msg']);
                         res['links'].forEach(function(link){
-                            $('.download-link').append('<a href="'+link+'">Download</a>');
+                            $('.download-link').append('<a href="/download?fname='+link+'&custom_uuid='+ custom_uuid +'">Download ('+link+')</a><br/>');
                         });
+                        $('.download-link').append('<a href="/download_zip?custom_uuid='+ custom_uuid +'">Download All as Zip</a>')
                         $('.download-link').removeClass('hidden');
                         $('.spin-container').addClass('hidden');
 
                     } else {
-                        alert(res['msg']);
+                        $('.alert').addClass('alert-danger');
+                        $('.alert').html(res['msg']);
                         setTimeout(function () {
                             window.location.href = '/';
                         }, 2000);

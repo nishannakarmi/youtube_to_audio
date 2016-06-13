@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
 import youtube_dl
 from utils import get_video_info
 from settings import MAXIMUM_VIDEO_TIME, ERROR_MSG, SECRET_KEY, MAXIMUM_NUMBER_OF_VIDEOS, TMP_DIR
 import uuid
+import os
+import zipfile
 
 app = Flask(__name__)
 app.debug = True
@@ -25,7 +27,7 @@ def pre_process():
             video_titles = []
             for url in urls:
                 info = get_video_info(url)
-                print(info['title'])
+
                 if info and info['duration'] <= MAXIMUM_VIDEO_TIME:
                     video_titles.append(info['title'])
                     continue
@@ -57,7 +59,11 @@ def process_file():
 
         if custom_uuid and (str(custom_uuid) == str(session.get('uuid', None))):
             success = True
-            msg = 'It Works Cheers!'
+            msg = 'Something went wrong while converting'
+            custom_dirs = TMP_DIR + custom_uuid
+            if not os.path.exists(custom_dirs):
+                os.makedirs(custom_dirs)
+
             ydl_opts = {
                 'format': 'bestaudio/best',
                 'postprocessors': [{
@@ -65,7 +71,7 @@ def process_file():
                     'preferredcodec': 'mp3',
                     'preferredquality': '192',
                 }],
-                'outtmpl': 'tmp/%(title)s-%(id)s.%(ext)s',
+                'outtmpl': '{custom_dirs}/%(title)s.%(ext)s' .format(custom_dirs=custom_dirs),
             }
 
             for url in session.get('urls'):
@@ -76,9 +82,9 @@ def process_file():
                 except Exception:
                     success = False
             if success:
-                for title in session.get('video_titles'):
-                    links.append('%s%s/%s' %(TMP_DIR, str(custom_uuid), str(title)))
-                msg = "It Works and downloaded, Check download folder %s" %(str(custom_uuid))
+                for fname in os.listdir(custom_dirs):
+                    links.append('%s' %(str(fname)))
+                msg = "Conversion successful"
 
         else:
             msg = ERROR_MSG['UNKNOWN']
@@ -91,7 +97,29 @@ def process_file():
 
 @app.route('/download')
 def download():
-    return render_template('download.html')
+    if request.args.get('fname') and request.args.get('custom_uuid'):
+        # return send_file(request.args.get('url'), filename_or_fp="a.mp3")
+        custom_dirs = '%s%s' %(TMP_DIR, str(request.args.get('custom_uuid')))
+        return send_from_directory(directory=custom_dirs, filename=str(request.args.get('fname')), as_attachment=True)
+    else:
+        flash(ERROR_MSG['UNKNOWN'])
+        return redirect(url_for('home'))
+
+
+@app.route('/download_zip')
+def download_zip():
+    custom_uuid = request.args.get('custom_uuid')
+    if custom_uuid:
+        zf = zipfile.ZipFile('%s%s.zip' %(TMP_DIR, custom_uuid), "w")
+        for dirname, subdirs, files in os.walk('%s%s' %(TMP_DIR, custom_uuid)):
+            zf.write(dirname)
+            for filename in files:
+                zf.write(os.path.join(dirname, filename))
+        zf.close()
+        return send_from_directory(directory=TMP_DIR, filename='%s.zip' %custom_uuid, as_attachment=True)
+    else:
+        flash(ERROR_MSG['UNKNOWN'])
+        return redirect(url_for('home'))
 
 
 if __name__ == '__main__':

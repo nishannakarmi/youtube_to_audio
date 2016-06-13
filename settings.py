@@ -11,3 +11,4 @@ os.urandom(24)
 """
 SECRET_KEY='\r\x05\xf9\x0f\x1d\xeb\xa4S{\xb4\x86\xba/"R\xb4\xf1\xeeg\\\xe3/J`'
 TMP_DIR = 'tmp/'
+DAYS_TO_PURGE = 1
