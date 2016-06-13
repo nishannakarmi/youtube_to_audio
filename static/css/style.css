@@ -29,15 +29,6 @@ body > .container {
   margin: 20px 0;
 }
 
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-code {
-  font-size: 80%;
-}
-
 #form-download {
     max-width: 688px;
     padding: 19px 19px;
@@ -54,4 +45,11 @@ code {
 
 .spinning {
     font-size: 36px;
+}
+
+.form-control-reset
+{
+    display: inline-block;
+    width: 95% !important;
+    margin-right: 3px;
 }

@@ -12,5 +12,5 @@ INSTALLATION GUIDE (Assuming linux {ubuntu} environment)
 - Default video file time has been set to 6 min. ie. we cannot download videos having time more than 6 min.
     To change it change the value of MAXIMUM_VIDEO_TIME in setting.py. It should be in seconds.
 - A python script file (remove_old_files.py) has been added. Place it in cron tab to run once a day as:
-    $ python remove_old_files.py
-    It checks files/folder older than 1 day (today) if know any, it removes all found files/folder.
+    $ python remove_old_files.py.
+    It checks files/folder older than 1 day (today) if found any, it removes all found files/folder.
