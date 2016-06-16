@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f # Don't interfere with static files
+RewriteRule ^(.*)$ /path/to/the/youtube_to_audio.cgi/$1 [L]
